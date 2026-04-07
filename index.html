@@ -434,11 +434,25 @@ function agreeLocation() {
 
       document.getElementById('loc-getting').innerHTML = '<div class="spin"></div><br>지역 담당자 확인 중...';
 
-      fetch('https://nominatim.openstreetmap.org/reverse?lat=' + LAT + '&lon=' + LNG + '&format=json&accept-language=ko')
+      fetch('https://nominatim.openstreetmap.org/reverse?lat=' + LAT + '&lon=' + LNG + '&format=json&accept-language=ko&addressdetails=1&zoom=18')
         .then(function(r) { return r.json(); })
         .then(function(data) {
           var addr = data.address || {};
+
+          // ★ 동 이름 추출 — 여러 필드 + display_name 파싱 조합
           var dong = addr.quarter || addr.suburb || addr.neighbourhood || addr.village || addr.town || addr.city_district || '';
+
+          // display_name에서 "OO동" 패턴 직접 추출 (Nominatim 필드 오류 보정)
+          if (!dong || !dong.match(/동$/)) {
+            var dn = data.display_name || '';
+            var match = dn.match(/([가-힣]+[0-9]?동)/g);
+            if (match && match.length > 0) {
+              // 가장 상세한 동 이름 선택 (숫자 포함 우선)
+              var numbered = match.filter(function(m) { return /[0-9]/.test(m); });
+              dong = numbered.length > 0 ? numbered[0] : match[0];
+            }
+          }
+
           var sigungu = addr.city || addr.county || '';
           var region = getRegion(dong);
 
@@ -448,11 +462,14 @@ function agreeLocation() {
           // ★ 좌표 고정 마커 링크 (받는 사람 위치 추적 없음)
           var kakaoURL  = 'https://map.kakao.com/link/map/굴착공사현장,' + LAT + ',' + LNG;
 
-          // 네이버맵: 좌표 고정 마커 — geo: 스킴으로 앱 직접 호출 (담당자 위치 무관)
-          var naverURL = 'https://map.naver.com/v5/?lat=' + LAT + '&lng=' + LNG + '&zoom=17&title=굴착공사현장&pinType=PLACE&pinX=' + LNG + '&pinY=' + LAT;
+          // 네이버맵: 좌표 고정 핀 — 웹 URL (담당자 위치 무관)
+          var naverURL = 'https://map.naver.com/v5/entry/coordinates/' + LNG + ',' + LAT + '?c=' + LNG + ',' + LAT + ',16,0,0,0,dh&p=' + LAT + ',' + LNG;
 
-          // 구글맵: 좌표 고정 핀 (모바일 앱/웹 모두 동작하는 표준 형식)
-          var googleURL = 'https://www.google.com/maps?q=' + LAT + ',' + LNG + '&z=17';
+          // 구글맵: geo: URI 방식 — 모든 폰에서 고정 좌표 핀 표시
+          var googleURL = 'geo:' + LAT + ',' + LNG + '?q=' + LAT + ',' + LNG + '(굴착공사현장)';
+          // 구글맵 웹 URL (SMS용 - geo: URI는 웹에서 안 열림)
+          var googleWebURL = 'https://www.google.com/maps/place/' + LAT + ',' + LNG + '/@' + LAT + ',' + LNG + ',17z';
+
           // ★ SMS에 세 가지 지도 링크 모두 포함
           var SMS = '[서울도시가스(주) 굴착공사 신고]\n현재 굴착공사를 진행하려 합니다. 도시가스 배관이 매설되어 있는지 확인 바랍니다.' +
             (addrStr ? '\n\n주소: ' + addrStr : '') +
@@ -460,13 +477,13 @@ function agreeLocation() {
             '\n\n📍 굴착 현장 위치 (고정 마커):' +
             '\n카카오맵: ' + kakaoURL +
             '\n네이버맵: ' + naverURL +
-            '\n구글맵: ' + googleURL;
+            '\n구글맵: ' + googleWebURL;
 
           // ★ 지도 선택 버튼 링크 세팅
           document.getElementById('map-kakao').href = kakaoURL;
           document.getElementById('map-naver').href = naverURL;
           document.getElementById('map-naver').onclick = null;
-          document.getElementById('map-google').href = googleURL;
+          document.getElementById('map-google').href = googleWebURL;
           document.getElementById('map-selector').style.display = 'block';
 
           document.getElementById('loc-coords').innerHTML =
