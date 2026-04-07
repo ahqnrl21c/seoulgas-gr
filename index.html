@@ -1,0 +1,591 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>서울도시가스(주) 굴착공사 안전관리</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{--blue:#00A0E9;--navy:#003A70;--green:#1C8B4C;--orange:#E8500A;--gray:#f4f7f9;--border:#dde1e8;--gtext:#6B7280}
+body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;background:var(--gray);min-height:100vh;color:#111}
+#gen-page{display:none}
+.gen-wrap{max-width:480px;margin:0 auto;padding:30px 16px 60px}
+.gen-header{text-align:center;margin-bottom:28px}
+.logo-row{display:flex;align-items:center;justify-content:center;gap:10px;margin-bottom:10px}
+.co-name{font-size:20px;font-weight:900;color:var(--navy)}
+.gen-header p{font-size:13px;color:var(--gtext)}
+.gen-card{background:#fff;border-radius:16px;padding:24px;box-shadow:0 2px 12px rgba(0,0,0,.07);margin-bottom:14px}
+.info-box{font-size:13px;color:#004a7a;line-height:1.7;background:#f0faff;border-radius:10px;border-left:3px solid var(--blue);padding:12px 14px;margin-bottom:16px}
+.gen-btn{width:100%;padding:16px;background:var(--blue);color:#fff;border:none;border-radius:12px;font-size:16px;font-weight:700;cursor:pointer}
+#sticker-wrap{display:none;margin-top:20px;padding:0 8px}
+.sticker-label{font-size:12px;color:var(--gtext);text-align:center;margin-bottom:12px;font-weight:600}
+#sticker-result{margin:0 auto;width:220px;border:3px solid var(--blue);border-radius:16px;background:#fff;padding:14px 14px 14px;display:flex;flex-direction:column;align-items:center;gap:8px;box-shadow:0 3px 14px rgba(0,0,0,.10)}
+.st-logo-row{display:flex;align-items:center;justify-content:center;gap:6px;width:190px}
+.st-co-name{font-size:11px;font-weight:900;color:var(--navy);white-space:nowrap}
+#qrcode-sticker{text-align:center;width:190px}
+#qrcode-sticker img,#qrcode-sticker canvas{width:130px!important;height:130px!important;display:block;margin:0 auto}
+.qr-strip{background:var(--blue);color:white;font-size:10px;font-weight:900;padding:5px 0;width:130px;text-align:center;border-radius:0 0 4px 4px;margin:0 auto}
+.st-divider{width:190px;border:none;border-top:1.5px dashed #ddd}
+.st-desc{font-size:8px;color:#555;line-height:1.55;text-align:center;word-break:keep-all;width:190px}
+.st-guide{background:#003A70;color:white;border-radius:6px;padding:6px 0;font-size:9px;font-weight:700;text-align:center;width:190px}
+.print-btn{width:100%;padding:13px;background:var(--navy);color:#fff;border:none;border-radius:12px;font-size:14px;font-weight:700;cursor:pointer;margin-top:14px}
+#scan-page{display:none}
+.scan-hero{background:var(--navy);padding:32px 20px 24px;text-align:center;color:#fff}
+.scan-hero img{width:72px;height:72px;border-radius:50%;background:#fff;padding:6px;margin-bottom:12px;object-fit:contain}
+.scan-hero h1{font-size:15px;font-weight:500;color:rgba(255,255,255,.8);margin-bottom:4px}
+.scan-hero h2{font-size:18px;font-weight:900}
+.scan-body{padding:16px;max-width:480px;margin:0 auto;padding-bottom:50px}
+.popup-overlay{position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,.55);z-index:1000;display:flex;align-items:center;justify-content:center;padding:20px}
+.popup-box{background:#fff;border-radius:20px;padding:28px 24px;max-width:340px;width:100%}
+.eocs-icon{font-size:32px;text-align:center;margin-bottom:8px}
+.eocs-title{font-size:17px;font-weight:900;color:var(--orange);text-align:center;margin-bottom:12px}
+.eocs-desc{font-size:13px;color:#555;line-height:1.75;background:#FFF3E0;border-radius:10px;padding:12px;border-left:3px solid var(--orange);margin-bottom:16px}
+.eocs-call-btn{display:flex;align-items:center;justify-content:center;gap:8px;padding:14px;background:var(--orange);color:white;border-radius:12px;font-size:15px;font-weight:900;text-decoration:none;margin-bottom:10px}
+.eocs-next-btn{width:100%;padding:14px;background:#fff;color:#888;border:1.5px solid #ddd;border-radius:12px;font-size:14px;font-weight:700;cursor:pointer}
+.popup-icon{font-size:14px;font-weight:700;color:var(--green);margin-bottom:14px}
+.popup-desc{font-size:13px;color:#555;line-height:1.75;background:#F8F9FB;border-radius:10px;padding:12px 14px;border-left:3px solid var(--blue);margin-bottom:20px}
+.popup-desc strong{color:#111}
+.popup-btns{display:flex;gap:10px}
+.popup-agree{flex:1.5;padding:15px;background:var(--green);color:#fff;border:none;border-radius:12px;font-size:15px;font-weight:700;cursor:pointer}
+.popup-deny{flex:1;padding:15px;background:#fff;color:#888;border:1.5px solid #e0e0e0;border-radius:12px;font-size:15px;font-weight:700;cursor:pointer}
+.loc-card{background:#fff;border-radius:16px;overflow:hidden;margin-bottom:12px;box-shadow:0 2px 12px rgba(0,0,0,.07)}
+.loc-getting{padding:20px;text-align:center;color:var(--gtext);font-size:13px}
+.spin{display:inline-block;width:24px;height:24px;border:3px solid #e0e0e0;border-top-color:var(--blue);border-radius:50%;animation:spin .8s linear infinite;margin-bottom:8px}
+@keyframes spin{to{transform:rotate(360deg)}}
+.loc-success{padding:16px 18px 18px;background:#EFF8FF}
+.ls-title{font-size:14px;font-weight:700;color:#004a7a;margin-bottom:8px}
+.ls-coords{font-size:12px;color:#005a8a;background:rgba(255,255,255,.8);border-radius:8px;padding:10px 12px;margin-bottom:12px;line-height:1.8}
+.loc-send-btn{display:flex;align-items:center;justify-content:center;gap:8px;width:100%;padding:16px;background:var(--blue);color:#fff;border:none;border-radius:12px;font-size:15px;font-weight:700;cursor:pointer;margin-bottom:10px}
+.manual-card{background:#fff;border-radius:16px;padding:20px;margin-bottom:12px;box-shadow:0 2px 12px rgba(0,0,0,.07)}
+.manual-card h3{font-size:14px;font-weight:700;margin-bottom:12px}
+.manual-input{width:100%;border:1.5px solid var(--border);border-radius:10px;padding:12px 14px;font-size:14px;outline:none;color:#111;margin-bottom:10px}
+.manual-input:focus{border-color:var(--blue)}
+.manual-send-btn{width:100%;padding:14px;background:var(--blue);color:#fff;border:none;border-radius:10px;font-size:14px;font-weight:700;cursor:pointer}
+.calls-label{font-size:11px;font-weight:700;color:var(--gtext);letter-spacing:2px;margin-bottom:10px}
+.call-card{border-radius:16px;overflow:hidden;margin-bottom:10px;box-shadow:0 2px 12px rgba(0,0,0,.08)}
+.call-head{padding:14px 18px;display:flex;align-items:center;gap:12px;color:#fff}
+.call-head.blue{background:linear-gradient(135deg,#00A0E9,#0077cc)}
+.call-head.navy{background:linear-gradient(135deg,#003A70,#005299)}
+.call-icon{font-size:24px}
+.call-info .cl{font-size:11px;opacity:.85;margin-bottom:2px}
+.call-info .cn{font-size:18px;font-weight:900}
+.call-info .cs{font-size:11px;opacity:.75;margin-top:2px}
+.call-foot a{display:flex;align-items:center;justify-content:center;gap:8px;padding:14px;font-size:14px;font-weight:700;text-decoration:none}
+.call-foot.blue a{background:#fff;color:#00A0E9}
+.call-foot.navy a{background:#F5F6F8;color:#003A70}
+.site-card{background:#fff;border-radius:16px;padding:18px 16px;margin-bottom:12px;box-shadow:0 2px 12px rgba(0,0,0,.07)}
+.site-label{font-size:12px;font-weight:700;color:var(--gtext);text-align:center;margin-bottom:12px}
+.site-btns{display:flex;gap:10px}
+.site-btn{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;padding:14px 8px;border-radius:12px;text-decoration:none}
+.site-btn.blue{background:#EFF8FF;border:1.5px solid #00A0E9}
+.site-btn.orange{background:#FFF3E0;border:1.5px solid #E8500A}
+.site-btn .si{font-size:22px}
+.site-btn .st{font-size:12px;font-weight:700;text-align:center;line-height:1.4}
+.site-btn.blue .st{color:#003A70}
+.site-btn.orange .st{color:#7A3000}
+.foot{text-align:center;padding:24px 16px;font-size:11px;color:#bbb;line-height:1.9}
+</style>
+</head>
+<body>
+<img id="logo-img" src="data:image/jpeg;base64,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" style="display:none">
+<div id="gen-page">
+<div class="gen-wrap">
+<div class="gen-header">
+<div class="logo-row">
+<img src="data:image/jpeg;base64,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" style="height:44px;width:44px;object-fit:contain;">
+<div class="co-name">서울도시가스(주)</div>
+</div>
+<p>굴착공사 안전관리 QR 스티커 생성</p>
+</div>
+<div class="gen-card">
+<div class="info-box">📍 QR 스캔 시 GPS로 현재 위치의 동을 자동 파악하여<br>해당 지역 담당자에게 자동 연결됩니다.</div>
+<button class="gen-btn" onclick="generateQR()">QR 스티커 생성하기</button>
+</div>
+<div id="sticker-wrap">
+<div class="sticker-label">📋 스티커 미리보기</div>
+<div id="sticker-result">
+<div class="st-logo-row">
+<img src="data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/4gHYSUNDX1BST0ZJTEUAAQEAAAHIAAAAAAQwAABtbnRyUkdCIFhZWiAH4AABAAEAAAAAAABhY3NwAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAQAA9tYAAQAAAADTLQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAlkZXNjAAAA8AAAACRyWFlaAAABFAAAABRnWFlaAAABKAAAABRiWFlaAAABPAAAABR3dHB0AAABUAAAABRyVFJDAAABZAAAAChnVFJDAAABZAAAAChiVFJDAAABZAAAAChjcHJ0AAABjAAAADxtbHVjAAAAAAAAAAEAAAAMZW5VUwAAAAgAAAAcAHMAUgBHAEJYWVogAAAAAAAAb6IAADj1AAADkFhZWiAAAAAAAABimQAAt4UAABjaWFlaIAAAAAAAACSgAAAPhAAAts9YWVogAAAAAAAA9tYAAQAAAADTLXBhcmEAAAAAAAQAAAACZmYAAPKnAAANWQAAE9AAAApbAAAAAAAAAABtbHVjAAAAAAAAAAEAAAAMZW5VUwAAACAAAAAcAEcAbwBvAGcAbABlACAASQBuAGMALgAgADIAMAAxADb/2wBDAAUDBAQEAwUEBAQFBQUGBwwIBwcHBw8LCwkMEQ8SEhEPERETFhwXExQaFRERGCEYGh0dHx8fExciJCIeJBweHx7/2wBDAQUFBQcGBw4ICA4eFBEUHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh7/wAARCAA8ADsDASIAAhEBAxEB/8QAHAAAAgIDAQEAAAAAAAAAAAAABQYAAgEHCAME/8QAOBAAAQMEAAMFAwkJAAAAAAAAAQIDBQAEBhESITEHE0FRcRRhkRUWIzIzUmJygQgXIkJTkqHB8P/EABkBAAMBAQEAAAAAAAAAAAAAAAIDBAUABv/EACsRAAEDAwIFBAEFAAAAAAAAAAECAxEABCESMQVBYXGBBhNRobEiJMHw8f/aAAwDAQACEQMRAD8A7LqVKG5DM2sLZB99K3XXFBu3t2xtx5w9EpH/AGqJCFLUEpEk0DjiW0lazAFEq8F3tmhXCu7YSryLgBpcag5ebAuMkv3bdpXNMdZOFCEDyWsc1H00KBS9vjNnm0Vidnjli+/dIL1w88kq7tsb6b5lR1VjVqhZKdUkAkwMADfJIrPevnG0hegAEgCSZJOBgA/fkCtjIUlaQpCgpJ6EHYrNLL2H21sS9AX11D3A5ju3CtpXuU2rYI9NV7QU5dGQMJOsItZMJKm1tn6K6QOqkE+Pmk8xSiwlSSpszHLY/wB7GnpuVJUEPJ0zsZkHpOIPcdppgqVCdDdSpqsqUq442JvI73IXxxs2zirOPSeiQk6cWPepXLfkKZrkkWzpHUIOvhS/2euMsYHHPuuIbR3JcdWtQABJJJJNUtHQytY3wPBmfxUbyfcuG2ztlXkQB+Z7xTJWns5uvkbt5gZBz7G4ZS0T+YqT/sGmW67VsYXeOWMGiQyG6bOlJjLYuoSfIr5JHxrVna9klzL5JE3D0FexT1qkKQ3cLQVuDi2COEnXTXOrOAKQ9dFoGdSVD6qf1ZY3Vnw8XLiNOlSCJwd/g5+q6PoNmESZWJV7Orur+2Pf2bw6tup5j9D0PuNJn75Mfj1IaySKm4EkhIcurQlon86dinmAnoaftRdw0pa3zJ58TLgVr1HUVks3KUrBQcit6+4Rcts/uGyEq58vBGPus43Jpl4S1keHhLyBxo+6oclD9CDRKlns+2I2/bR9RuSuAjy1xk6+JNM1PuEBDqkjaazbRxTjCFK3ioQCCDzBrmv9oV+bj8I+bdqq4RY2Uio3pa3tVss8TRP4dkjy2BXSlLuY4+qUSi+sQx7eygo4H08TVy0frMuD7p8D4HnQaA80thRjVz+CNvHI96vsb08Nv2b9KNftnKfkHeOowR1FCcJt8btsUg28fSz8hKtgoLa0EuOaGu8I8eu9+Na2zHDO0fIsmM4qAhmmkFIZaTIjg4Enlv8Ah8fH1pihsQxcXzjUJJzOESqz9PHtXPC2o/hQvaFJ96aNpwjLmlEM533id7CriMaWr49K5h674euUDSYjEER0n+Ktu2eD8ZQS46FpJmF+4CDnfQd85k8thSrk0lnxhr0yuF4u5GoZKrsJlVdyEgdTy1vy1zpC7Db+MYyl2YisSEXb2Nop+6fEm6scKgQhHAeSlKPQH1ra8zg0KhLT+fZfITLLauNFk6sNMLV7mWxtXpzohhWHWIujeMQ/yTEB/wBpatF/a3Lv8rru+gA+qjwqZixWtxLzuED5iT0GP83rXvPU1nb2LtlajU8sR+nWECcSqVZgbSBOBmmrCLB6Oxu2auhq5c4n3x5LWSoj/OqNVKlUuLLiys868gy0Gm0tp2AipWCQPWs1Qc1c6CmV8spFxsswGpGyYukDoHEg69D1FB/mTCp5NOSLKPuN3riU/DdMQ5nXnzq9ORcOtiEqIFTuWjDqtS0AntQeJxmEjHu/tY9rv/6zhK3P7lbNGKlYBPERQLcW4ZWZNMbaQ0NKAAOlVOyd70KvVVgdfGrUFMr/2Q==" style="height:26px;width:26px;object-fit:contain;flex-shrink:0;">
+<div class="st-co-name">서울도시가스(주)</div>
+</div>
+<div><div id="qrcode-sticker"></div><div class="qr-strip">⚠ 굴착공사 신고</div></div>
+<hr class="st-divider">
+<div class="st-desc">구멍뚫기, 말뚝 박기, 터파기 등 토지의 굴착공사를 하는 자는 도시가스사업법 제30조의2에 의거 신고 후 공사를 진행하여야 합니다.</div>
+<div class="st-guide">📱 핸드폰 카메라로 스캔하면 바로 연결</div>
+</div>
+<button class="print-btn" onclick="savePNG()">⬇️ 스티커 PNG 저장 (인쇄용)</button>
+</div>
+</div>
+</div>
+<div id="scan-page">
+<div class="scan-hero">
+<img src="data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/4gHYSUNDX1BST0ZJTEUAAQEAAAHIAAAAAAQwAABtbnRyUkdCIFhZWiAH4AABAAEAAAAAAABhY3NwAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAQAA9tYAAQAAAADTLQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAlkZXNjAAAA8AAAACRyWFlaAAABFAAAABRnWFlaAAABKAAAABRiWFlaAAABPAAAABR3dHB0AAABUAAAABRyVFJDAAABZAAAAChnVFJDAAABZAAAAChiVFJDAAABZAAAAChjcHJ0AAABjAAAADxtbHVjAAAAAAAAAAEAAAAMZW5VUwAAAAgAAAAcAHMAUgBHAEJYWVogAAAAAAAAb6IAADj1AAADkFhZWiAAAAAAAABimQAAt4UAABjaWFlaIAAAAAAAACSgAAAPhAAAts9YWVogAAAAAAAA9tYAAQAAAADTLXBhcmEAAAAAAAQAAAACZmYAAPKnAAANWQAAE9AAAApbAAAAAAAAAABtbHVjAAAAAAAAAAEAAAAMZW5VUwAAACAAAAAcAEcAbwBvAGcAbABlACAASQBuAGMALgAgADIAMAAxADb/2wBDAAUDBAQEAwUEBAQFBQUGBwwIBwcHBw8LCwkMEQ8SEhEPERETFhwXExQaFRERGCEYGh0dHx8fExciJCIeJBweHx7/2wBDAQUFBQcGBw4ICA4eFBEUHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh7/wAARCAA8ADsDASIAAhEBAxEB/8QAHAAAAgIDAQEAAAAAAAAAAAAABQYAAgEHCAME/8QAOBAAAQMEAAMFAwkJAAAAAAAAAQIDBQAEBhESITEHE0FRcRRhkRUWIzIzUmJygQgXIkJTkqHB8P/EABkBAAMBAQEAAAAAAAAAAAAAAAIDBAUABv/EACsRAAEDAwIFBAEFAAAAAAAAAAECAxEABCESMQVBYXGBBhNRobEiJMHw8f/aAAwDAQACEQMRAD8A7LqVKG5DM2sLZB99K3XXFBu3t2xtx5w9EpH/AGqJCFLUEpEk0DjiW0lazAFEq8F3tmhXCu7YSryLgBpcag5ebAuMkv3bdpXNMdZOFCEDyWsc1H00KBS9vjNnm0Vidnjli+/dIL1w88kq7tsb6b5lR1VjVqhZKdUkAkwMADfJIrPevnG0hegAEgCSZJOBgA/fkCtjIUlaQpCgpJ6EHYrNLL2H21sS9AX11D3A5ju3CtpXuU2rYI9NV7QU5dGQMJOsItZMJKm1tn6K6QOqkE+Pmk8xSiwlSSpszHLY/wB7GnpuVJUEPJ0zsZkHpOIPcdppgqVCdDdSpqsqUq442JvI73IXxxs2zirOPSeiQk6cWPepXLfkKZrkkWzpHUIOvhS/2euMsYHHPuuIbR3JcdWtQABJJJJNUtHQytY3wPBmfxUbyfcuG2ztlXkQB+Z7xTJWns5uvkbt5gZBz7G4ZS0T+YqT/sGmW67VsYXeOWMGiQyG6bOlJjLYuoSfIr5JHxrVna9klzL5JE3D0FexT1qkKQ3cLQVuDi2COEnXTXOrOAKQ9dFoGdSVD6qf1ZY3Vnw8XLiNOlSCJwd/g5+q6PoNmESZWJV7Orur+2Pf2bw6tup5j9D0PuNJn75Mfj1IaySKm4EkhIcurQlon86dinmAnoaftRdw0pa3zJ58TLgVr1HUVks3KUrBQcit6+4Rcts/uGyEq58vBGPus43Jpl4S1keHhLyBxo+6oclD9CDRKlns+2I2/bR9RuSuAjy1xk6+JNM1PuEBDqkjaazbRxTjCFK3ioQCCDzBrmv9oV+bj8I+bdqq4RY2Uio3pa3tVss8TRP4dkjy2BXSlLuY4+qUSi+sQx7eygo4H08TVy0frMuD7p8D4HnQaA80thRjVz+CNvHI96vsb08Nv2b9KNftnKfkHeOowR1FCcJt8btsUg28fSz8hKtgoLa0EuOaGu8I8eu9+Na2zHDO0fIsmM4qAhmmkFIZaTIjg4Enlv8Ah8fH1pihsQxcXzjUJJzOESqz9PHtXPC2o/hQvaFJ96aNpwjLmlEM533id7CriMaWr49K5h674euUDSYjEER0n+Ktu2eD8ZQS46FpJmF+4CDnfQd85k8thSrk0lnxhr0yuF4u5GoZKrsJlVdyEgdTy1vy1zpC7Db+MYyl2YisSEXb2Nop+6fEm6scKgQhHAeSlKPQH1ra8zg0KhLT+fZfITLLauNFk6sNMLV7mWxtXpzohhWHWIujeMQ/yTEB/wBpatF/a3Lv8rru+gA+qjwqZixWtxLzuED5iT0GP83rXvPU1nb2LtlajU8sR+nWECcSqVZgbSBOBmmrCLB6Oxu2auhq5c4n3x5LWSoj/OqNVKlUuLLiys868gy0Gm0tp2AipWCQPWs1Qc1c6CmV8spFxsswGpGyYukDoHEg69D1FB/mTCp5NOSLKPuN3riU/DdMQ5nXnzq9ORcOtiEqIFTuWjDqtS0AntQeJxmEjHu/tY9rv/6zhK3P7lbNGKlYBPERQLcW4ZWZNMbaQ0NKAAOlVOyd70KvVVgdfGrUFMr/2Q==">
+<h1>서울도시가스(주)로</h1>
+<h2>현재 위치를 전송하고 신고를 진행합니다.</h2>
+</div>
+<div class="popup-overlay" id="eocs-popup">
+<div class="popup-box">
+<div class="eocs-icon">🚨</div>
+<div class="eocs-title">EOCS 신고 먼저!</div>
+<div class="eocs-desc"><strong>도시가스사업법 제30조의2에 의거</strong><br>굴착공사 전 반드시<br><strong>EOCS(굴착공사정보지원센터)</strong>에<br>신고하여야 합니다.</div>
+<div style="background:#EFF8FF;border-radius:10px;padding:12px 14px;border-left:3px solid #00A0E9;font-size:12px;color:#004a7a;line-height:1.7;margin-bottom:16px;">
+📍 아래 버튼을 누르면 담당자에게 <strong>위치 문자 전송</strong> 후<br><strong>EOCS 1644-0001 신고전화</strong>로 바로 진행됩니다.
+</div>
+<button class="eocs-call-btn" style="display:flex;align-items:center;justify-content:center;gap:8px;padding:14px;background:#00A0E9;color:white;border-radius:12px;font-size:15px;font-weight:900;text-decoration:none;margin-bottom:10px;width:100%;border:none;cursor:pointer;" onclick="showLocPopup()">📍 위치 전송 후 EOCS 신고 진행</button>
+<button class="eocs-next-btn" onclick="skipToManual()">위치 공유 없이 진행하기</button>
+</div></div>
+<div class="popup-overlay" id="loc-popup" style="display:none">
+<div class="popup-box">
+<div class="popup-icon">📍 굴착기 위치 공유 동의</div>
+<div class="popup-desc">현재 굴착기의 GPS 위치를 수집하여<br>담당자에게 문자로 전송합니다.<br><br>수집된 위치 정보는 <strong>현장 안전 관리 목적으로만</strong> 사용됩니다.<br><br><strong>위치 정보 공유에 동의하십니까?</strong></div>
+<div class="popup-btns"><button class="popup-agree" onclick="agreeLocation()">✅ 동의</button><button class="popup-deny" onclick="denyLocation()">✕ 거부</button></div>
+</div></div>
+<div class="popup-overlay" id="send-popup" style="display:none">
+<div class="popup-box">
+<div style="font-size:28px;text-align:center;margin-bottom:8px">📤</div>
+<div style="font-size:16px;font-weight:900;color:#003A70;text-align:center;margin-bottom:12px">위치 전송 및 EOCS 신고</div>
+<div style="font-size:13px;color:#555;line-height:1.75;background:#EFF8FF;border-radius:10px;padding:12px 14px;border-left:3px solid #00A0E9;margin-bottom:16px;">
+  아래 <strong>① 문자 전송</strong> 후 돌아와서<br>
+  <strong>② EOCS 신고 전화</strong>를 눌러주세요.
+</div>
+<button id="popup-sms-btn" style="width:100%;padding:15px;background:#00A0E9;color:#fff;border:none;border-radius:12px;font-size:15px;font-weight:700;cursor:pointer;margin-bottom:10px;">① 📤 담당자에게 문자 전송</button>
+<button id="popup-eocs-btn" style="width:100%;padding:15px;background:#E8500A;color:#fff;border:none;border-radius:12px;font-size:15px;font-weight:700;cursor:pointer;margin-bottom:10px;opacity:0.4;" disabled>② 📞 EOCS 1644-0001 신고 전화</button>
+<button onclick="document.getElementById('send-popup').style.display='none'" style="width:100%;padding:12px;background:#fff;color:#aaa;border:1.5px solid #ddd;border-radius:12px;font-size:13px;font-weight:600;cursor:pointer;">닫기</button>
+</div></div>
+<div class="scan-body">
+<div class="loc-card" id="loc-result-card" style="display:none">
+<div class="loc-getting" id="loc-getting"><div class="spin"></div><br>GPS 위치 확인 중...</div>
+<div class="loc-success" id="loc-success" style="display:none">
+<div class="ls-title">✅ 위치 확인 완료</div>
+<div class="ls-coords" id="loc-coords"></div>
+<button class="loc-send-btn" id="btn-send">📤 담당자에게 위치 문자 전송</button>
+<button id="btn-eocs-call" style="display:none;width:100%;padding:16px;background:#E8500A;color:#fff;border:none;border-radius:12px;font-size:15px;font-weight:700;cursor:pointer;margin-top:10px;" onclick="window.location.href='tel:16440001'">📞 EOCS 1644-0001 신고 전화</button>
+<div id="map-selector" style="display:none;margin-top:10px;">
+<div style="font-size:12px;font-weight:700;color:#6B7280;margin-bottom:8px;text-align:center;">📍 현장 위치 지도로 확인</div>
+<div style="display:flex;gap:8px;">
+<a id="map-kakao" href="#" target="_blank" style="flex:1;display:flex;flex-direction:column;align-items:center;gap:4px;padding:10px 6px;background:#FEE500;border-radius:10px;text-decoration:none;">
+  <span style="font-size:18px;">🗺️</span><span style="font-size:11px;font-weight:700;color:#3A1D1D;">카카오맵</span>
+</a>
+<a id="map-naver" href="#" target="_blank" style="flex:1;display:flex;flex-direction:column;align-items:center;gap:4px;padding:10px 6px;background:#03C75A;border-radius:10px;text-decoration:none;">
+  <span style="font-size:18px;">🗺️</span><span style="font-size:11px;font-weight:700;color:#fff;">네이버맵</span>
+</a>
+<a id="map-google" href="#" target="_blank" style="flex:1;display:flex;flex-direction:column;align-items:center;gap:4px;padding:10px 6px;background:#4285F4;border-radius:10px;text-decoration:none;">
+  <span style="font-size:18px;">🗺️</span><span style="font-size:11px;font-weight:700;color:#fff;">구글맵</span>
+</a>
+</div>
+</div>
+</div></div>
+<div class="manual-card" id="manual-card" style="display:none">
+<h3>📝 위치 직접 입력</h3>
+<input class="manual-input" id="manual-addr" placeholder="현장 주소를 입력해주세요 (예: 서울시 서대문구 홍은동 12)">
+<input class="manual-input" id="manual-detail" placeholder="상세 위치 (예: 3번 맨홀 앞)">
+<button class="manual-send-btn" onclick="sendManual()">📍 위치 전송 (문자 발송)</button>
+</div>
+<div id="call-section" style="display:none">
+<div class="calls-label">긴급 연락처</div>
+<div class="call-card"><div class="call-head blue"><div class="call-icon">📞</div><div class="call-info"><div class="cl">서울도시가스(주) 신고 접수처</div><div class="cn" id="sc-phone">확인 중...</div><div class="cs">지역 담당자 직통</div></div></div><div class="call-foot blue"><a id="call-link" href="#">📞 신고 접수처 전화하기</a></div></div>
+<div class="call-card"><div class="call-head navy"><div class="call-icon">🏛️</div><div class="call-info"><div class="cl">EOCS 굴착공사정보지원센터</div><div class="cn">1644-0001</div><div class="cs">굴착공사 사전 신고 · 24시간</div></div></div><div class="call-foot navy"><a href="tel:16440001">EOCS 신고센터 연결</a></div></div>
+</div>
+<div class="site-card"><div class="site-label">🌐 관련 사이트 바로가기</div><div class="site-btns"><a href="https://www.seoulgas.co.kr" target="_blank" class="site-btn blue"><div class="si">🏢</div><div class="st">서울도시가스<br>홈페이지</div></a><a href="https://www.eocs.or.kr" target="_blank" class="site-btn orange"><div class="si">🏛️</div><div class="st">EOCS<br>굴착공사신고</div></a></div></div>
+<div class="foot">굴착공사정보지원시스템 (EOCS) · www.eocs.or.kr<br>본 QR코드는 도시가스 안전관리 목적으로 발급되었습니다.</div>
+</div></div>
+
+<script>
+var REGION_MAP = {
+  '홍은동':   {phones:['01082535668','01029750856']},
+  '홍은1동':  {phones:['01082535668','01029750856']},
+  '홍은2동':  {phones:['01082535668','01029750856']},
+  '홍은3동':  {phones:['01082535668','01029750856']},
+  '홍제동':   {phones:['01063607042','01023112967']},
+  '홍제1동':  {phones:['01063607042','01023112967']},
+  '홍제2동':  {phones:['01063607042','01023112967']},
+  '홍제3동':  {phones:['01063607042','01023112967']},
+  '남가좌동':  {phones:['01063102384','01039293112']},
+  '남가좌1동': {phones:['01063102384','01039293112']},
+  '남가좌2동': {phones:['01063102384','01039293112']},
+  '북가좌동':  {phones:['01063102384','01039293112']},
+  '북가좌1동': {phones:['01063102384','01039293112']},
+  '북가좌2동': {phones:['01063102384','01039293112']},
+  '가좌동':   {phones:['01063102384','01039293112']},
+  '연희동':   {phones:['01042033563','01042072291']},
+  '창천동':   {phones:['01052087988','01036302816']},
+  '대신동':   {phones:['01052087988','01036302816']},
+  '신촌동':   {phones:['01052087988','01036302816']},
+  '봉원동':   {phones:['01052087988','01036302816']},
+  '충현동':   {phones:['01091250546']},
+  '대현동':   {phones:['01091250546']},
+  '북아현동':  {phones:['01091250546']},
+  '북아현1동': {phones:['01091250546']},
+  '북아현2동': {phones:['01091250546']},
+  '평창동':   {phones:['01072998063','01032308229']},
+  '구기동':   {phones:['01072998063','01032308229']},
+  '홍지동':   {phones:['01072998063','01032308229']},
+  '신영동':   {phones:['01072998063','01032308229']},
+  '부암동':   {phones:['01072998063','01032308229']},
+  '응암동':   {phones:['01027332316']},
+  '응암1동':  {phones:['01027332316']},
+  'DEFAULT':  {phones:[]}
+};
+
+function fmtPhone(p) {
+  return p.slice(0,3) + '-' + p.slice(3,7) + '-' + p.slice(7,11);
+}
+
+function getRegion(dong) {
+  if (!dong) return REGION_MAP['DEFAULT'];
+  if (REGION_MAP[dong]) return REGION_MAP[dong];
+  for (var k in REGION_MAP) {
+    if (k !== 'DEFAULT' && dong.indexOf(k) !== -1) return REGION_MAP[k];
+  }
+  for (var k in REGION_MAP) {
+    if (k !== 'DEFAULT' && k.indexOf(dong) !== -1 && dong.length >= 2) return REGION_MAP[k];
+  }
+  var db = dong.replace(/[0-9]/g, '').replace('동', '');
+  for (var k in REGION_MAP) {
+    if (k !== 'DEFAULT') {
+      var kb = k.replace(/[0-9]/g, '').replace('동', '');
+      if (db.length >= 2 && kb.indexOf(db) !== -1) return REGION_MAP[k];
+    }
+  }
+  return REGION_MAP['DEFAULT'];
+}
+
+var params = new URLSearchParams(location.search);
+window._done = false;
+
+if (params.has('scan')) {
+  document.getElementById('scan-page').style.display = 'block';
+} else {
+  document.getElementById('gen-page').style.display = 'block';
+}
+
+function generateQR() {
+  var url = location.origin + location.pathname + '?scan=1';
+  document.getElementById('qrcode-sticker').innerHTML = '';
+  new QRCode(document.getElementById('qrcode-sticker'), {
+    text: url, width: 130, height: 130,
+    colorDark: '#003A70', colorLight: '#ffffff',
+    correctLevel: QRCode.CorrectLevel.H
+  });
+  document.getElementById('sticker-wrap').style.display = 'block';
+  setTimeout(function() {
+    // ★ 스티커 라벨(맨 위)로 스크롤 - 로고가 잘리지 않게
+    var wrap = document.getElementById('sticker-wrap');
+    var top = wrap.getBoundingClientRect().top + window.pageYOffset - 20;
+    window.scrollTo({top: top, behavior: 'smooth'});
+  }, 300);
+}
+
+function rrect(ctx, x, y, w, h, r) {
+  ctx.beginPath();
+  ctx.moveTo(x+r, y); ctx.lineTo(x+w-r, y);
+  ctx.quadraticCurveTo(x+w, y, x+w, y+r);
+  ctx.lineTo(x+w, y+h-r);
+  ctx.quadraticCurveTo(x+w, y+h, x+w-r, y+h);
+  ctx.lineTo(x+r, y+h);
+  ctx.quadraticCurveTo(x, y+h, x, y+h-r);
+  ctx.lineTo(x, y+r);
+  ctx.quadraticCurveTo(x, y, x+r, y);
+  ctx.closePath();
+}
+
+function savePNG() {
+  var qrC = document.querySelector('#qrcode-sticker canvas');
+  var qrI = document.querySelector('#qrcode-sticker img');
+  if (!qrC && !qrI) { alert('QR을 먼저 생성해주세요'); return; }
+
+  var W = 360;
+  var STROKE = 12;      // 테두리 선 두께
+  var PAD = 28;         // 테두리 안쪽 ~ 콘텐츠 여백
+  var BORDER = STROKE;  // 콘텐츠 시작 기준 = stroke 전체 두께
+
+  // ── 콘텐츠 높이 사전 계산 ──
+  var lw = 28;         // 로고 크기
+  var logoH = lw;      // 로고 행 높이
+  var logoGap = 14;    // 로고↔QR 간격
+
+  var qs = 160;        // QR 크기
+  var qStrip = 30;     // 굴착공사신고 띠
+  var stripGap = 22;   // 띠↔구분선 간격
+
+  var dividerH = 1;
+  var textGap = 22;    // 구분선↔본문 간격
+  var textH = 54;      // 본문 3줄 (18px 간격)
+  var btnGap = 18;     // 본문↔버튼 간격
+  var btnH = 42;       // 버튼 높이
+
+  var contentH = logoH + logoGap + qs + qStrip + stripGap + dividerH + textGap + textH + btnGap + btnH;
+  var H = contentH + PAD * 2 + BORDER * 2;
+
+  var cv = document.createElement('canvas');
+  cv.width = W; cv.height = H;
+  var ctx = cv.getContext('2d');
+
+  ctx.fillStyle = '#ffffff';
+  ctx.fillRect(0, 0, W, H);
+  ctx.strokeStyle = '#00A0E9';
+  ctx.lineWidth = STROKE;
+  // stroke 중심이 STROKE/2 위치에 오도록
+  var half = STROKE / 2;
+  rrect(ctx, half, half, W - STROKE, H - STROKE, 24);
+  ctx.stroke();
+
+  var li = document.getElementById('logo-img');
+
+  function draw() {
+    // 시작 y = stroke 전체 두께 + 내부 여백
+    var curY = BORDER + PAD;
+
+    // ── 로고 + 회사명 ──
+    ctx.font = 'bold 15px sans-serif';
+    var tw = ctx.measureText('서울도시가스(주)').width;
+    var gap = 7;
+    var sx = (W - (lw + gap + tw)) / 2;
+    ctx.drawImage(li, sx, curY, lw, lw);
+    ctx.fillStyle = '#003A70';
+    ctx.textAlign = 'left';
+    ctx.fillText('서울도시가스(주)', sx + lw + gap, curY + lw/2 + 5);
+    curY += logoH + logoGap;
+
+    // ── QR 코드 ──
+    var qp = 20, qx = (W - qs) / 2;
+    ctx.fillStyle = '#ffffff';
+    ctx.fillRect(qx - qp, curY - qp, qs + qp*2, qs + qp*2);
+    ctx.drawImage(qrC || qrI, qx, curY, qs, qs);
+    curY += qs;
+
+    // ── 굴착공사 신고 띠 ──
+    ctx.fillStyle = '#00A0E9';
+    ctx.fillRect(qx, curY, qs, qStrip);
+    ctx.fillStyle = '#ffffff';
+    ctx.font = 'bold 14px sans-serif';
+    ctx.textAlign = 'center';
+    ctx.fillText('⚠ 굴착공사 신고', W/2, curY + 20);
+    curY += qStrip + stripGap;
+
+    // ── 구분선 ──
+    ctx.strokeStyle = '#cccccc';
+    ctx.lineWidth = 1.5;
+    ctx.setLineDash([8, 5]);
+    ctx.beginPath(); ctx.moveTo(30, curY); ctx.lineTo(W-30, curY); ctx.stroke();
+    ctx.setLineDash([]);
+    curY += dividerH + textGap;
+
+    // ── 본문 3줄 ──
+    ctx.fillStyle = '#333'; ctx.font = '12px sans-serif'; ctx.textAlign = 'center';
+    ctx.fillText('구멍뚫기, 말뚝 박기, 터파기 등 토지의 굴착공사를 하는 자는', W/2, curY);
+    ctx.font = 'bold 12px sans-serif'; ctx.fillStyle = '#003A70';
+    ctx.fillText('도시가스사업법 제30조의2에 의거', W/2, curY + 18);
+    ctx.font = '12px sans-serif'; ctx.fillStyle = '#333';
+    ctx.fillText('신고 후 공사를 진행하여야 합니다.', W/2, curY + 36);
+    curY += textH + btnGap;
+
+    // ── 버튼 ──
+    ctx.fillStyle = '#003A70';
+    rrect(ctx, qx - qp, curY, qs + qp*2, btnH, 10); ctx.fill();
+    ctx.fillStyle = '#ffffff'; ctx.font = 'bold 13px sans-serif'; ctx.textAlign = 'center';
+    ctx.fillText('핸드폰 카메라로 스캔하면 바로 연결', W/2, curY + 26);
+
+    var a = document.createElement('a');
+    a.download = '굴착공사신고_스티커.png';
+    a.href = cv.toDataURL('image/png');
+    a.click();
+  }
+
+  if (li && li.complete) { draw(); }
+  else if (li) { li.onload = draw; }
+  else { draw(); }
+}
+
+function showLocPopup() {
+  document.getElementById('eocs-popup').style.display = 'none';
+  document.getElementById('loc-popup').style.display = 'flex';
+}
+
+function skipToManual() {
+  document.getElementById('eocs-popup').style.display = 'none';
+  document.getElementById('loc-result-card').style.display = 'block';
+  document.getElementById('loc-getting').style.display = 'none';
+  document.getElementById('manual-card').style.display = 'block';
+  document.getElementById('call-section').style.display = 'block';
+  document.getElementById('sc-phone').textContent = '주소 입력 후 전송';
+}
+
+function agreeLocation() {
+  if (window._done) return;
+  window._done = true;
+  document.getElementById('loc-popup').style.display = 'none';
+  document.getElementById('loc-result-card').style.display = 'block';
+  document.getElementById('loc-getting').style.display = 'block';
+  document.getElementById('loc-getting').innerHTML = '<div class="spin"></div><br>GPS 위치 확인 중...';
+
+  if (!navigator.geolocation) {
+    document.getElementById('loc-getting').innerHTML = '❌ 위치 서비스 미지원 기기입니다.';
+    return;
+  }
+
+  navigator.geolocation.getCurrentPosition(
+    function(pos) {
+      var LAT = pos.coords.latitude.toFixed(6);
+      var LNG = pos.coords.longitude.toFixed(6);
+      var ACC = Math.round(pos.coords.accuracy);
+      pos = null;
+
+      document.getElementById('loc-getting').innerHTML = '<div class="spin"></div><br>지역 담당자 확인 중...';
+
+      fetch('https://nominatim.openstreetmap.org/reverse?lat=' + LAT + '&lon=' + LNG + '&format=json&accept-language=ko')
+        .then(function(r) { return r.json(); })
+        .then(function(data) {
+          var addr = data.address || {};
+          var dong = addr.quarter || addr.suburb || addr.neighbourhood || addr.village || addr.town || addr.city_district || '';
+          var sigungu = addr.city || addr.county || '';
+          var region = getRegion(dong);
+
+          document.getElementById('loc-getting').style.display = 'none';
+
+          var addrStr = (sigungu ? sigungu + ' ' : '') + (dong || '');
+          // ★ 좌표 고정 마커 링크 (받는 사람 위치 추적 없음)
+          var kakaoURL  = 'https://map.kakao.com/link/map/굴착공사현장,' + LAT + ',' + LNG;
+
+          // 네이버맵: 좌표 고정 마커 — geo: 스킴으로 앱 직접 호출 (담당자 위치 무관)
+          var naverURL = 'https://map.naver.com/v5/?lat=' + LAT + '&lng=' + LNG + '&zoom=17&title=굴착공사현장&pinType=PLACE&pinX=' + LNG + '&pinY=' + LAT;
+
+          // 구글맵: 좌표 고정 핀 (모바일 앱/웹 모두 동작하는 표준 형식)
+          var googleURL = 'https://www.google.com/maps?q=' + LAT + ',' + LNG + '&z=17';
+          // ★ SMS에 세 가지 지도 링크 모두 포함
+          var SMS = '[서울도시가스(주) 굴착공사 신고]\n현재 굴착공사를 진행하려 합니다. 도시가스 배관이 매설되어 있는지 확인 바랍니다.' +
+            (addrStr ? '\n\n주소: ' + addrStr : '') +
+            '\n좌표: 위도 ' + LAT + ' / 경도 ' + LNG +
+            '\n\n📍 굴착 현장 위치 (고정 마커):' +
+            '\n카카오맵: ' + kakaoURL +
+            '\n네이버맵: ' + naverURL +
+            '\n구글맵: ' + googleURL;
+
+          // ★ 지도 선택 버튼 링크 세팅
+          document.getElementById('map-kakao').href = kakaoURL;
+          document.getElementById('map-naver').href = naverURL;
+          document.getElementById('map-naver').onclick = null;
+          document.getElementById('map-google').href = googleURL;
+          document.getElementById('map-selector').style.display = 'block';
+
+          document.getElementById('loc-coords').innerHTML =
+            (addrStr ? '<strong>📍 ' + addrStr + '</strong><br>' : '') +
+            '위도 <strong>' + LAT + '</strong> / 경도 <strong>' + LNG + '</strong><br>' +
+            '정확도: 약 ' + ACC + 'm<br>' +
+            '<span style="color:#00A0E9;font-weight:700;">담당: 서울도시가스(주)</span>';
+
+          if (region.phones && region.phones.length > 0) {
+            var dp = region.phones.map(function(p) { return fmtPhone(p); }).join(' / ');
+            document.getElementById('sc-phone').textContent = dp;
+            document.getElementById('call-link').href = 'tel:' + region.phones[0];
+            document.getElementById('call-section').style.display = 'block';
+            var FP = region.phones.slice();
+            var FS = SMS;
+            var btn = document.getElementById('btn-send');
+            btn.style.display = 'flex';
+            btn.onclick = function() {
+              // 팝업 열기
+              var popup = document.getElementById('send-popup');
+              popup.style.display = 'flex';
+
+              var smsDone = false;
+              var smsBtn = document.getElementById('popup-sms-btn');
+              var eocsBtn = document.getElementById('popup-eocs-btn');
+
+              // ① 문자 전송 버튼
+              smsBtn.onclick = function() {
+                if (smsDone) return;
+                smsDone = true;
+                smsBtn.textContent = '✅ 전송 완료';
+                smsBtn.style.opacity = '0.5';
+                smsBtn.style.cursor = 'default';
+                // EOCS 버튼 활성화
+                eocsBtn.disabled = false;
+                eocsBtn.style.opacity = '1';
+                // 문자앱으로 이동
+                setTimeout(function() {
+                  window.location.href = 'sms:' + FP.join(';') + '?body=' + encodeURIComponent(FS);
+                }, 150);
+                // 문자앱에서 돌아와도 활성 상태 유지
+                document.addEventListener('visibilitychange', function onBack() {
+                  if (document.visibilityState === 'visible') {
+                    eocsBtn.disabled = false;
+                    eocsBtn.style.opacity = '1';
+                    document.removeEventListener('visibilitychange', onBack);
+                  }
+                });
+              };
+
+              // ② EOCS 전화 버튼
+              eocsBtn.onclick = function() {
+                window.location.href = 'tel:16440001';
+                popup.style.display = 'none';
+                // 메인 화면 전송완료 처리
+                btn.onclick = null;
+                btn.style.opacity = '0.5';
+                btn.textContent = '✅ 전송 완료';
+                btn.style.cursor = 'default';
+                document.getElementById('btn-eocs-call').style.display = 'none';
+              };
+            };
+          } else if (dong && dong !== '') {
+            document.getElementById('btn-send').style.display = 'none';
+            document.getElementById('call-section').style.display = 'none';
+            var box = document.createElement('div');
+            box.style.cssText = 'background:#FFF8E1;border:1.5px solid #FFB800;border-radius:12px;padding:14px;margin-bottom:10px;text-align:center';
+            box.innerHTML = '<div style="font-size:13px;font-weight:700;color:#7A5000;margin-bottom:10px">📋 담당자 정보 미등록 지역입니다<br><span style="font-size:11px;font-weight:400">아래 번호로 연락하거나 EOCS에 신고해 주세요</span></div>' +
+              '<a href="tel:023808585" style="display:flex;align-items:center;justify-content:center;gap:6px;padding:12px;background:#003A70;color:white;border-radius:10px;font-size:14px;font-weight:700;text-decoration:none;margin-bottom:8px">📞 서울도시가스 대표 02-380-8585</a>' +
+              '<a href="tel:16440001" style="display:flex;align-items:center;justify-content:center;gap:6px;padding:12px;background:#E8500A;color:white;border-radius:10px;font-size:14px;font-weight:700;text-decoration:none">📞 EOCS 1644-0001 신고 전화</a>';
+            document.getElementById('loc-success').appendChild(box);
+          } else {
+            document.getElementById('call-section').style.display = 'none';
+            var btn = document.getElementById('btn-send');
+            btn.style.display = 'flex';
+            btn.textContent = '📞 EOCS 1644-0001 신고 전화';
+            btn.onclick = function() { window.location.href = 'tel:16440001'; };
+          }
+          document.getElementById('loc-success').style.display = 'block';
+        })
+        .catch(function() {
+          document.getElementById('loc-getting').style.display = 'none';
+          document.getElementById('sc-phone').textContent = '위치 확인 실패';
+          document.getElementById('call-link').href = 'tel:16440001';
+          document.getElementById('call-section').style.display = 'block';
+          document.getElementById('loc-success').style.display = 'block';
+        });
+    },
+    function(err) {
+      window._done = false;
+      var msg = '위치를 가져오지 못했습니다.';
+      if (err.code === 1) msg = '위치 권한을 허용해주세요.';
+      document.getElementById('loc-getting').innerHTML = '❌ ' + msg;
+    },
+    {enableHighAccuracy: true, timeout: 15000, maximumAge: 0}
+  );
+}
+
+function denyLocation() {
+  document.getElementById('loc-popup').style.display = 'none';
+  document.getElementById('loc-result-card').style.display = 'block';
+  document.getElementById('loc-getting').style.display = 'none';
+  document.getElementById('manual-card').style.display = 'block';
+  document.getElementById('call-section').style.display = 'block';
+  document.getElementById('sc-phone').textContent = '주소 입력 후 전송';
+}
+
+function sendManual() {
+  var addr = document.getElementById('manual-addr').value.trim();
+  var detail = document.getElementById('manual-detail').value.trim();
+  if (!addr) { alert('주소를 입력해주세요'); return; }
+  var sms = '[서울도시가스(주) 굴착공사 신고]\n현재 굴착공사를 진행하려 합니다. 도시가스 배관이 매설되어 있는지 확인 바랍니다.\n\n주소: ' + addr + (detail ? '\n상세: ' + detail : '');
+  var region = getRegion(addr);
+  if (region.phones && region.phones.length > 0) {
+    window.location.href = 'sms:' + region.phones.join(';') + '?body=' + encodeURIComponent(sms);
+  } else {
+    window.location.href = 'tel:16440001';
+  }
+}
+</script>
+</body>
+</html>
