@@ -223,9 +223,9 @@ var REGION_MAP = {
   '홍지동':   {phones:['01072998063','01032308229']},
   '신영동':   {phones:['01072998063','01032308229']},
   '부암동':   {phones:['01072998063','01032308229']},
-  '염창동':   {phones:['01082535668']},
   '응암동':   {phones:['01027332316']},
   '응암1동':  {phones:['01027332316']},
+  '염창동':   {phones:['01082535668']},
   'DEFAULT':  {phones:[]}
 };
 
@@ -420,45 +420,81 @@ function agreeLocation() {
   document.getElementById('loc-result-card').style.display = 'block';
   document.getElementById('loc-getting').style.display = 'block';
   document.getElementById('loc-getting').innerHTML = '<div class="spin"></div><br>GPS 위치 확인 중...';
+
   if (!navigator.geolocation) {
     document.getElementById('loc-getting').innerHTML = '❌ 위치 서비스 미지원 기기입니다.';
     return;
   }
+
   navigator.geolocation.getCurrentPosition(
     function(pos) {
-      // ★ 위치값 즉시 고정 - 이후 절대 변경 안됨
       var LAT = pos.coords.latitude.toFixed(6);
       var LNG = pos.coords.longitude.toFixed(6);
       var ACC = Math.round(pos.coords.accuracy);
-      pos = null; // ★ GPS 객체 즉시 폐기
+      pos = null;
+
       document.getElementById('loc-getting').innerHTML = '<div class="spin"></div><br>지역 담당자 확인 중...';
-      fetch('https://nominatim.openstreetmap.org/reverse?lat=' + LAT + '&lon=' + LNG + '&format=json&accept-language=ko')
+
+      fetch('https://nominatim.openstreetmap.org/reverse?lat=' + LAT + '&lon=' + LNG + '&format=json&accept-language=ko&addressdetails=1&zoom=18')
         .then(function(r) { return r.json(); })
         .then(function(data) {
-          var addr    = data.address || {};
-          var dong    = addr.quarter || addr.suburb || addr.neighbourhood || addr.village || addr.town || addr.city_district || '';
+          var addr = data.address || {};
+
+          // ★ 동 이름 추출 — 여러 필드 + display_name 파싱 조합
+          var dong = addr.quarter || addr.suburb || addr.neighbourhood || addr.village || addr.town || addr.city_district || '';
+
+          // display_name에서 "OO동" 패턴 직접 추출 (Nominatim 필드 오류 보정)
+          if (!dong || !dong.match(/동$/)) {
+            var dn = data.display_name || '';
+            var match = dn.match(/([가-힣]+[0-9]?동)/g);
+            if (match && match.length > 0) {
+              // 가장 상세한 동 이름 선택 (숫자 포함 우선)
+              var numbered = match.filter(function(m) { return /[0-9]/.test(m); });
+              dong = numbered.length > 0 ? numbered[0] : match[0];
+            }
+          }
+
           var sigungu = addr.city || addr.county || '';
-          var region  = getRegionInfo(dong);
+          var region = getRegion(dong);
+
           document.getElementById('loc-getting').style.display = 'none';
-          var addrStr   = (sigungu ? sigungu + ' ' : '') + (dong || '');
-          // ★ 고정 좌표 마커 링크 (받는 사람 위치 추적 없음)
+
+          var addrStr = (sigungu ? sigungu + ' ' : '') + (dong || '');
+          // ★ 좌표 고정 마커 링크 (받는 사람 위치 추적 없음)
           var kakaoURL  = 'https://map.kakao.com/link/map/굴착공사현장,' + LAT + ',' + LNG;
-          var googleURL = 'https://www.google.com/maps?q=' + LAT + ',' + LNG + '&z=17';
-          // ★ 문자 내용 고정
+
+          // 네이버맵: 좌표 고정 핀 — 웹 URL (담당자 위치 무관)
+          var naverURL = 'https://map.naver.com/v5/entry/coordinates/' + LNG + ',' + LAT + '?c=' + LNG + ',' + LAT + ',16,0,0,0,dh&p=' + LAT + ',' + LNG;
+
+          // 구글맵: geo: URI 방식 — 모든 폰에서 고정 좌표 핀 표시
+          var googleURL = 'geo:' + LAT + ',' + LNG + '?q=' + LAT + ',' + LNG + '(굴착공사현장)';
+          // 구글맵 웹 URL (SMS용 - geo: URI는 웹에서 안 열림)
+          var googleWebURL = 'https://www.google.com/maps/place/' + LAT + ',' + LNG + '/@' + LAT + ',' + LNG + ',17z';
+
+          // ★ SMS에 세 가지 지도 링크 모두 포함
           var SMS = '[서울도시가스(주) 굴착공사 신고]\n현재 굴착공사를 진행하려 합니다. 도시가스 배관이 매설되어 있는지 확인 바랍니다.' +
             (addrStr ? '\n\n주소: ' + addrStr : '') +
             '\n좌표: 위도 ' + LAT + ' / 경도 ' + LNG +
-            '\n\n📍 굴착 현장 위치 (고정 마커):\n카카오맵: ' + kakaoURL +
-            '\n구글맵: ' + googleURL;
+            '\n\n📍 굴착 현장 위치 (고정 마커):' +
+            '\n카카오맵: ' + kakaoURL +
+            '\n네이버맵: ' + naverURL +
+            '\n구글맵: ' + googleWebURL;
+
+          // ★ 지도 선택 버튼 링크 세팅
+          document.getElementById('map-kakao').href = kakaoURL;
+          document.getElementById('map-naver').href = naverURL;
+          document.getElementById('map-naver').onclick = null;
+          document.getElementById('map-google').href = googleWebURL;
+          document.getElementById('map-selector').style.display = 'block';
+
           document.getElementById('loc-coords').innerHTML =
             (addrStr ? '<strong>📍 ' + addrStr + '</strong><br>' : '') +
             '위도 <strong>' + LAT + '</strong> / 경도 <strong>' + LNG + '</strong><br>' +
             '정확도: 약 ' + ACC + 'm<br>' +
             '<span style="color:#00A0E9;font-weight:700;">담당: 서울도시가스(주)</span>';
+
           if (region.phones && region.phones.length > 0) {
-            var dp = region.phones.map(function(p) {
-              return p.slice(0,3) + '-' + p.slice(3,7) + '-' + p.slice(7,11);
-            }).join(' / ');
+            var dp = region.phones.map(function(p) { return fmtPhone(p); }).join(' / ');
             document.getElementById('sc-phone').textContent = dp;
             document.getElementById('call-link').href = 'tel:' + region.phones[0];
             document.getElementById('call-section').style.display = 'block';
@@ -467,13 +503,49 @@ function agreeLocation() {
             var btn = document.getElementById('btn-send');
             btn.style.display = 'flex';
             btn.onclick = function() {
-              // ★ 버튼 즉시 비활성화 - 중복 발송 차단
-              btn.onclick = null;
-              btn.style.opacity = '0.5';
-              btn.textContent = '✅ 전송 완료';
-              btn.style.cursor = 'default';
-              window.location.href = 'sms:' + FP.join(';') + '?body=' + encodeURIComponent(FS);
-              setTimeout(function() { window.location.href = 'tel:16440001'; }, 3000);
+              // 팝업 열기
+              var popup = document.getElementById('send-popup');
+              popup.style.display = 'flex';
+
+              var smsDone = false;
+              var smsBtn = document.getElementById('popup-sms-btn');
+              var eocsBtn = document.getElementById('popup-eocs-btn');
+
+              // ① 문자 전송 버튼
+              smsBtn.onclick = function() {
+                if (smsDone) return;
+                smsDone = true;
+                smsBtn.textContent = '✅ 전송 완료';
+                smsBtn.style.opacity = '0.5';
+                smsBtn.style.cursor = 'default';
+                // EOCS 버튼 활성화
+                eocsBtn.disabled = false;
+                eocsBtn.style.opacity = '1';
+                // 문자앱으로 이동
+                setTimeout(function() {
+                  window.location.href = 'sms:' + FP.join(';') + '?body=' + encodeURIComponent(FS);
+                }, 150);
+                // 문자앱에서 돌아와도 활성 상태 유지
+                document.addEventListener('visibilitychange', function onBack() {
+                  if (document.visibilityState === 'visible') {
+                    eocsBtn.disabled = false;
+                    eocsBtn.style.opacity = '1';
+                    document.removeEventListener('visibilitychange', onBack);
+                  }
+                });
+              };
+
+              // ② EOCS 전화 버튼
+              eocsBtn.onclick = function() {
+                window.location.href = 'tel:16440001';
+                popup.style.display = 'none';
+                // 메인 화면 전송완료 처리
+                btn.onclick = null;
+                btn.style.opacity = '0.5';
+                btn.textContent = '✅ 전송 완료';
+                btn.style.cursor = 'default';
+                document.getElementById('btn-eocs-call').style.display = 'none';
+              };
             };
           } else if (dong && dong !== '') {
             document.getElementById('btn-send').style.display = 'none';
@@ -507,7 +579,7 @@ function agreeLocation() {
       if (err.code === 1) msg = '위치 권한을 허용해주세요.';
       document.getElementById('loc-getting').innerHTML = '❌ ' + msg;
     },
-    { enableHighAccuracy: true, timeout: 15000, maximumAge: 0 }
+    {enableHighAccuracy: true, timeout: 15000, maximumAge: 0}
   );
 }
 
