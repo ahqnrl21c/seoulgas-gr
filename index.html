@@ -128,15 +128,30 @@ body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;backgrou
 <div class="popup-box">
 <div class="eocs-icon">🚨</div>
 <div class="eocs-title">EOCS 신고 먼저!</div>
-<div class="eocs-desc">굴착공사 전 반드시<br><strong>EOCS 굴착공사정보지원센터</strong>에<br>신고 후 담당자에게 연락하시기 바랍니다.</div>
-<a href="tel:16440001" class="eocs-call-btn">📞 EOCS 1644-0001 신고 전화</a>
-<button class="eocs-next-btn" onclick="showLocPopup()">신고 완료 → 위치 공유하기</button>
+<div class="eocs-desc"><strong>도시가스사업법 제30조의2에 의거</strong><br>굴착공사 전 반드시<br><strong>EOCS(굴착공사정보지원센터)</strong>에<br>신고하여야 합니다.</div>
+<div style="background:#EFF8FF;border-radius:10px;padding:12px 14px;border-left:3px solid #00A0E9;font-size:12px;color:#004a7a;line-height:1.7;margin-bottom:16px;">
+📍 아래 버튼을 누르면 담당자에게 <strong>위치 문자 전송</strong> 후<br><strong>EOCS 1644-0001 신고전화</strong>로 바로 진행됩니다.
+</div>
+<button class="eocs-call-btn" style="display:flex;align-items:center;justify-content:center;gap:8px;padding:14px;background:#00A0E9;color:white;border-radius:12px;font-size:15px;font-weight:900;text-decoration:none;margin-bottom:10px;width:100%;border:none;cursor:pointer;" onclick="showLocPopup()">📍 위치 전송 후 EOCS 신고 진행</button>
+<button class="eocs-next-btn" onclick="skipToManual()">위치공유 없이 주소 직접입력</button>
 </div></div>
 <div class="popup-overlay" id="loc-popup" style="display:none">
 <div class="popup-box">
 <div class="popup-icon">📍 굴착기 위치 공유 동의</div>
-<div class="popup-desc">현재 굴착기의 GPS 위치를 수집하여 현장 안전 관리에 활용합니다.<br>수집된 위치 정보는 <strong>현장 안전 관리 목적으로만</strong> 사용됩니다.<br><br><strong>위치 정보 공유에 동의하십니까?</strong></div>
-<div class="popup-btns"><button class="popup-agree" onclick="agreeLocation()">✅ 동의</button><button class="popup-deny" onclick="denyLocation()">X 거부</button></div>
+<div class="popup-desc">현재 굴착기의 GPS 위치를 수집하여<br>담당자에게 문자로 전송합니다.<br><br>수집된 위치 정보는 <strong>현장 안전 관리 목적으로만</strong> 사용됩니다.<br><br><strong>위치 정보 공유에 동의하십니까?</strong></div>
+<div class="popup-btns"><button class="popup-agree" onclick="agreeLocation()">✅ 동의</button><button class="popup-deny" onclick="denyLocation()">✕ 거부</button></div>
+</div></div>
+<div class="popup-overlay" id="send-popup" style="display:none">
+<div class="popup-box">
+<div style="font-size:28px;text-align:center;margin-bottom:8px">📤</div>
+<div style="font-size:16px;font-weight:900;color:#003A70;text-align:center;margin-bottom:12px">위치 전송 및 EOCS 신고</div>
+<div style="font-size:13px;color:#555;line-height:1.75;background:#EFF8FF;border-radius:10px;padding:12px 14px;border-left:3px solid #00A0E9;margin-bottom:16px;">
+  아래 <strong>① 문자 전송</strong> 후 돌아와서<br>
+  <strong>② EOCS 신고 전화</strong>를 눌러주세요.
+</div>
+<button id="popup-sms-btn" style="width:100%;padding:15px;background:#00A0E9;color:#fff;border:none;border-radius:12px;font-size:15px;font-weight:700;cursor:pointer;margin-bottom:10px;">① 📤 담당자에게 문자 전송</button>
+<button id="popup-eocs-btn" style="width:100%;padding:15px;background:#E8500A;color:#fff;border:none;border-radius:12px;font-size:15px;font-weight:700;cursor:pointer;margin-bottom:10px;opacity:0.4;" disabled>② 📞 EOCS 1644-0001 신고 전화</button>
+<button onclick="document.getElementById('send-popup').style.display='none'" style="width:100%;padding:12px;background:#fff;color:#aaa;border:1.5px solid #ddd;border-radius:12px;font-size:13px;font-weight:600;cursor:pointer;">닫기</button>
 </div></div>
 <div class="scan-body">
 <div class="loc-card" id="loc-result-card" style="display:none">
@@ -144,7 +159,22 @@ body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;backgrou
 <div class="loc-success" id="loc-success" style="display:none">
 <div class="ls-title">✅ 위치 확인 완료</div>
 <div class="ls-coords" id="loc-coords"></div>
-<button class="loc-send-btn" id="btn-send">📍 담당자 위치 전송 후 EOCS 신고 전화</button>
+<button class="loc-send-btn" id="btn-send">📤 담당자에게 위치 문자 전송</button>
+<button id="btn-eocs-call" style="display:none;width:100%;padding:16px;background:#E8500A;color:#fff;border:none;border-radius:12px;font-size:15px;font-weight:700;cursor:pointer;margin-top:10px;" onclick="window.location.href='tel:16440001'">📞 EOCS 1644-0001 신고 전화</button>
+<div id="map-selector" style="display:none;margin-top:10px;">
+<div style="font-size:12px;font-weight:700;color:#6B7280;margin-bottom:8px;text-align:center;">📍 현장 위치 지도로 확인</div>
+<div style="display:flex;gap:8px;">
+<a id="map-kakao" href="#" target="_blank" style="flex:1;display:flex;flex-direction:column;align-items:center;gap:4px;padding:10px 6px;background:#FEE500;border-radius:10px;text-decoration:none;">
+  <span style="font-size:18px;">🗺️</span><span style="font-size:11px;font-weight:700;color:#3A1D1D;">카카오맵</span>
+</a>
+<a id="map-naver" href="#" target="_blank" style="flex:1;display:flex;flex-direction:column;align-items:center;gap:4px;padding:10px 6px;background:#03C75A;border-radius:10px;text-decoration:none;">
+  <span style="font-size:18px;">🗺️</span><span style="font-size:11px;font-weight:700;color:#fff;">네이버맵</span>
+</a>
+<a id="map-google" href="#" target="_blank" style="flex:1;display:flex;flex-direction:column;align-items:center;gap:4px;padding:10px 6px;background:#4285F4;border-radius:10px;text-decoration:none;">
+  <span style="font-size:18px;">🗺️</span><span style="font-size:11px;font-weight:700;color:#fff;">구글맵</span>
+</a>
+</div>
+</div>
 </div></div>
 <div class="manual-card" id="manual-card" style="display:none">
 <h3>📝 위치 직접 입력</h3>
@@ -266,7 +296,29 @@ function savePNG() {
   var qrI = document.querySelector('#qrcode-sticker img');
   if (!qrC && !qrI) { alert('QR을 먼저 생성해주세요'); return; }
 
-  var W = 360, H = 460;
+  var W = 360;
+  var STROKE = 12;      // 테두리 선 두께
+  var PAD = 28;         // 테두리 안쪽 ~ 콘텐츠 여백
+  var BORDER = STROKE;  // 콘텐츠 시작 기준 = stroke 전체 두께
+
+  // ── 콘텐츠 높이 사전 계산 ──
+  var lw = 28;         // 로고 크기
+  var logoH = lw;      // 로고 행 높이
+  var logoGap = 14;    // 로고↔QR 간격
+
+  var qs = 160;        // QR 크기
+  var qStrip = 30;     // 굴착공사신고 띠
+  var stripGap = 22;   // 띠↔구분선 간격
+
+  var dividerH = 1;
+  var textGap = 22;    // 구분선↔본문 간격
+  var textH = 54;      // 본문 3줄 (18px 간격)
+  var btnGap = 18;     // 본문↔버튼 간격
+  var btnH = 42;       // 버튼 높이
+
+  var contentH = logoH + logoGap + qs + qStrip + stripGap + dividerH + textGap + textH + btnGap + btnH;
+  var H = contentH + PAD * 2 + BORDER * 2;
+
   var cv = document.createElement('canvas');
   cv.width = W; cv.height = H;
   var ctx = cv.getContext('2d');
@@ -274,53 +326,67 @@ function savePNG() {
   ctx.fillStyle = '#ffffff';
   ctx.fillRect(0, 0, W, H);
   ctx.strokeStyle = '#00A0E9';
-  ctx.lineWidth = 12;
-  rrect(ctx, 6, 6, W-12, H-12, 24);
+  ctx.lineWidth = STROKE;
+  // stroke 중심이 STROKE/2 위치에 오도록
+  var half = STROKE / 2;
+  rrect(ctx, half, half, W - STROKE, H - STROKE, 24);
   ctx.stroke();
 
-  // ★ 로고는 DOM에서 가져옴 (JS 문자열 삽입 없음)
   var li = document.getElementById('logo-img');
 
   function draw() {
-    ctx.font = 'bold 20px sans-serif';
+    // 시작 y = stroke 전체 두께 + 내부 여백
+    var curY = BORDER + PAD;
+
+    // ── 로고 + 회사명 ──
+    ctx.font = 'bold 15px sans-serif';
     var tw = ctx.measureText('서울도시가스(주)').width;
-    var lw = 36, gap = 8, sx = (W - (lw + gap + tw)) / 2;
-    ctx.drawImage(li, sx, 16, lw, lw);
+    var gap = 7;
+    var sx = (W - (lw + gap + tw)) / 2;
+    ctx.drawImage(li, sx, curY, lw, lw);
     ctx.fillStyle = '#003A70';
     ctx.textAlign = 'left';
-    ctx.fillText('서울도시가스(주)', sx + lw + gap, 40);
+    ctx.fillText('서울도시가스(주)', sx + lw + gap, curY + lw/2 + 5);
+    curY += logoH + logoGap;
 
-    var qs = 160, qp = 25, qx = (W - qs) / 2, qy = 62;
+    // ── QR 코드 ──
+    var qp = 20, qx = (W - qs) / 2;
     ctx.fillStyle = '#ffffff';
-    ctx.fillRect(qx - qp, qy - qp, qs + qp*2, qs + qp*2);
-    ctx.drawImage(qrC || qrI, qx, qy, qs, qs);
+    ctx.fillRect(qx - qp, curY - qp, qs + qp*2, qs + qp*2);
+    ctx.drawImage(qrC || qrI, qx, curY, qs, qs);
+    curY += qs;
 
+    // ── 굴착공사 신고 띠 ──
     ctx.fillStyle = '#00A0E9';
-    ctx.fillRect(qx, qy + qs, qs, 30);
+    ctx.fillRect(qx, curY, qs, qStrip);
     ctx.fillStyle = '#ffffff';
     ctx.font = 'bold 14px sans-serif';
     ctx.textAlign = 'center';
-    ctx.fillText('⚠ 굴착공사 신고', W/2, qy + qs + 20);
+    ctx.fillText('⚠ 굴착공사 신고', W/2, curY + 20);
+    curY += qStrip + stripGap;
 
-    var dy = qy + qs + 52;
+    // ── 구분선 ──
     ctx.strokeStyle = '#cccccc';
     ctx.lineWidth = 1.5;
     ctx.setLineDash([8, 5]);
-    ctx.beginPath(); ctx.moveTo(30, dy); ctx.lineTo(W-30, dy); ctx.stroke();
+    ctx.beginPath(); ctx.moveTo(30, curY); ctx.lineTo(W-30, curY); ctx.stroke();
     ctx.setLineDash([]);
+    curY += dividerH + textGap;
 
-    var ty = dy + 26;
+    // ── 본문 3줄 ──
     ctx.fillStyle = '#333'; ctx.font = '12px sans-serif'; ctx.textAlign = 'center';
-    ctx.fillText('구멍뚫기, 말뚝 박기, 터파기 등 토지의 굴착공사를 하는 자는', W/2, ty);
+    ctx.fillText('구멍뚫기, 말뚝 박기, 터파기 등 토지의 굴착공사를 하는 자는', W/2, curY);
     ctx.font = 'bold 12px sans-serif'; ctx.fillStyle = '#003A70';
-    ctx.fillText('도시가스사업법 제30조의2에 의거', W/2, ty + 18);
+    ctx.fillText('도시가스사업법 제30조의2에 의거', W/2, curY + 18);
     ctx.font = '12px sans-serif'; ctx.fillStyle = '#333';
-    ctx.fillText('신고 후 공사를 진행하여야 합니다.', W/2, ty + 36);
+    ctx.fillText('신고 후 공사를 진행하여야 합니다.', W/2, curY + 36);
+    curY += textH + btnGap;
 
+    // ── 버튼 ──
     ctx.fillStyle = '#003A70';
-    rrect(ctx, qx-qp, ty+55, qs+qp*2, 42, 10); ctx.fill();
+    rrect(ctx, qx - qp, curY, qs + qp*2, btnH, 10); ctx.fill();
     ctx.fillStyle = '#ffffff'; ctx.font = 'bold 13px sans-serif'; ctx.textAlign = 'center';
-    ctx.fillText('핸드폰 카메라로 스캔하면 바로 연결', W/2, ty + 81);
+    ctx.fillText('핸드폰 카메라로 스캔하면 바로 연결', W/2, curY + 26);
 
     var a = document.createElement('a');
     a.download = '굴착공사신고_스티커.png';
@@ -335,11 +401,16 @@ function savePNG() {
 
 function showLocPopup() {
   document.getElementById('eocs-popup').style.display = 'none';
-  if (window._done) {
-    document.getElementById('loc-result-card').style.display = 'block';
-    return;
-  }
   document.getElementById('loc-popup').style.display = 'flex';
+}
+
+function skipToManual() {
+  document.getElementById('eocs-popup').style.display = 'none';
+  document.getElementById('loc-result-card').style.display = 'block';
+  document.getElementById('loc-getting').style.display = 'none';
+  document.getElementById('manual-card').style.display = 'block';
+  document.getElementById('call-section').style.display = 'block';
+  document.getElementById('sc-phone').textContent = '주소 입력 후 전송';
 }
 
 function agreeLocation() {
@@ -349,53 +420,45 @@ function agreeLocation() {
   document.getElementById('loc-result-card').style.display = 'block';
   document.getElementById('loc-getting').style.display = 'block';
   document.getElementById('loc-getting').innerHTML = '<div class="spin"></div><br>GPS 위치 확인 중...';
-
   if (!navigator.geolocation) {
     document.getElementById('loc-getting').innerHTML = '❌ 위치 서비스 미지원 기기입니다.';
     return;
   }
-
   navigator.geolocation.getCurrentPosition(
     function(pos) {
+      // ★ 위치값 즉시 고정 - 이후 절대 변경 안됨
       var LAT = pos.coords.latitude.toFixed(6);
       var LNG = pos.coords.longitude.toFixed(6);
       var ACC = Math.round(pos.coords.accuracy);
-      pos = null;
-
+      pos = null; // ★ GPS 객체 즉시 폐기
       document.getElementById('loc-getting').innerHTML = '<div class="spin"></div><br>지역 담당자 확인 중...';
-
       fetch('https://nominatim.openstreetmap.org/reverse?lat=' + LAT + '&lon=' + LNG + '&format=json&accept-language=ko')
         .then(function(r) { return r.json(); })
         .then(function(data) {
-          var addr = data.address || {};
-          var dong = addr.quarter || addr.suburb || addr.neighbourhood || addr.village || addr.town || addr.city_district || '';
+          var addr    = data.address || {};
+          var dong    = addr.quarter || addr.suburb || addr.neighbourhood || addr.village || addr.town || addr.city_district || '';
           var sigungu = addr.city || addr.county || '';
-          var region = getRegion(dong);
-
+          var region  = getRegionInfo(dong);
           document.getElementById('loc-getting').style.display = 'none';
-
-          var addrStr = (sigungu ? sigungu + ' ' : '') + (dong || '');
-          // ★ 좌표 고정 마커 링크 (받는 사람 위치 추적 없음)
+          var addrStr   = (sigungu ? sigungu + ' ' : '') + (dong || '');
+          // ★ 고정 좌표 마커 링크 (받는 사람 위치 추적 없음)
           var kakaoURL  = 'https://map.kakao.com/link/map/굴착공사현장,' + LAT + ',' + LNG;
-          var naverURL  = 'https://map.naver.com/v5/search/' + LAT + ',' + LNG + '?c=' + LNG + ',' + LAT + ',16,0,0,0,dh&marker=' + LAT + ',' + LNG;
-          var googleURL = 'https://www.google.com/maps?q=' + LAT + ',' + LNG + '&ll=' + LAT + ',' + LNG + '&z=17';
-          var naverURL  = naverURL;
-          // ★ SMS에 고정 좌표 마커 링크 사용 (카카오맵 - 마커 고정, 수신자 위치 무관)
+          var googleURL = 'https://www.google.com/maps?q=' + LAT + ',' + LNG + '&z=17';
+          // ★ 문자 내용 고정
           var SMS = '[서울도시가스(주) 굴착공사 신고]\n현재 굴착공사를 진행하려 합니다. 도시가스 배관이 매설되어 있는지 확인 바랍니다.' +
             (addrStr ? '\n\n주소: ' + addrStr : '') +
             '\n좌표: 위도 ' + LAT + ' / 경도 ' + LNG +
-            '\n\n📍 굴착 현장 위치 (고정 마커):' +
-            '\n카카오맵: ' + kakaoURL +
+            '\n\n📍 굴착 현장 위치 (고정 마커):\n카카오맵: ' + kakaoURL +
             '\n구글맵: ' + googleURL;
-
           document.getElementById('loc-coords').innerHTML =
             (addrStr ? '<strong>📍 ' + addrStr + '</strong><br>' : '') +
             '위도 <strong>' + LAT + '</strong> / 경도 <strong>' + LNG + '</strong><br>' +
             '정확도: 약 ' + ACC + 'm<br>' +
             '<span style="color:#00A0E9;font-weight:700;">담당: 서울도시가스(주)</span>';
-
           if (region.phones && region.phones.length > 0) {
-            var dp = region.phones.map(function(p) { return fmtPhone(p); }).join(' / ');
+            var dp = region.phones.map(function(p) {
+              return p.slice(0,3) + '-' + p.slice(3,7) + '-' + p.slice(7,11);
+            }).join(' / ');
             document.getElementById('sc-phone').textContent = dp;
             document.getElementById('call-link').href = 'tel:' + region.phones[0];
             document.getElementById('call-section').style.display = 'block';
@@ -404,6 +467,7 @@ function agreeLocation() {
             var btn = document.getElementById('btn-send');
             btn.style.display = 'flex';
             btn.onclick = function() {
+              // ★ 버튼 즉시 비활성화 - 중복 발송 차단
               btn.onclick = null;
               btn.style.opacity = '0.5';
               btn.textContent = '✅ 전송 완료';
@@ -443,12 +507,14 @@ function agreeLocation() {
       if (err.code === 1) msg = '위치 권한을 허용해주세요.';
       document.getElementById('loc-getting').innerHTML = '❌ ' + msg;
     },
-    {enableHighAccuracy: true, timeout: 15000, maximumAge: 0}
+    { enableHighAccuracy: true, timeout: 15000, maximumAge: 0 }
   );
 }
 
 function denyLocation() {
   document.getElementById('loc-popup').style.display = 'none';
+  document.getElementById('loc-result-card').style.display = 'block';
+  document.getElementById('loc-getting').style.display = 'none';
   document.getElementById('manual-card').style.display = 'block';
   document.getElementById('call-section').style.display = 'block';
   document.getElementById('sc-phone').textContent = '주소 입력 후 전송';
